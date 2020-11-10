@@ -197,6 +197,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             boolean success = jsonObject.getBoolean("success");
+                            //boolean state = false;
                             Log.d(TAG,"success : " + success);
 
                             int number = jsonObject.getInt("number");
@@ -205,23 +206,27 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             String[] lng = new String[number+2];
                             Log.d(TAG, "String success !!");
 
-                            while(number>=0) {
+                            while(number>=0 && success == true) {
                                 lat[number] = jsonObject.getString("Latitude"+number);
                                 lng[number] = jsonObject.getString("Longitude"+number);
                                 Log.d(TAG, "Latitude : "+lat[number]);
                                 Log.d(TAG, "Longitude : "+lng[number]);
                                 number--;
+                                //state = true;
                             }
 
-
-                            setCurrentLocation(lat, lng); //현재 위치에 마커 생성
-
-
+                            int i = 0;
                             if(success){
+                                Log.d(TAG, "test1");
+                                setCurrentLocation(lat, lng); //현재 위치에 마커 생성
                                 Toast.makeText(getApplicationContext(),"어린이 보호구역" , Toast.LENGTH_SHORT).show();
                             }
                             else{
                                 Toast.makeText(getApplicationContext(), "일반 구역",Toast.LENGTH_SHORT).show();
+                                while(currentMarker[i]!=null) {
+                                    currentMarker[i].remove();
+                                    i++;
+                                }
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -347,6 +352,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             i++;
         }
 
+        Log.d(TAG, "test2");
         i=0;
         while(lat[i]!=null)
         {
