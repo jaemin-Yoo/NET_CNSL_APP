@@ -13,10 +13,12 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
+import android.os.Vibrator;
 import android.provider.Settings;
 import android.telephony.PhoneNumberUtils;
 import android.telephony.TelephonyManager;
@@ -218,6 +220,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             int i = 0;
                             if(success){
                                 Log.d(TAG, "test1");
+                                soundwarning();
                                 setCurrentLocation(lat, lng); //현재 위치에 마커 생성
                                 Toast.makeText(getApplicationContext(),"어린이 보호구역" , Toast.LENGTH_SHORT).show();
                             }
@@ -254,6 +257,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     };
 
+    public void soundwarning(){
+        Vibrator vibrator; //진동 알람 객체
+        MediaPlayer player; //소리 알람 객체
+        vibrator=(Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
+        vibrator.vibrate(new long []{500,1000,500,1000},-1);
+
+        player=MediaPlayer.create(this,R.raw.schoolzone_person);
+        player.start();
+
+    }
 
 
     private void startLocationUpdates() //위치를 이동하면서 계속 업데이트하는 과정
@@ -304,35 +317,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    public String getCurrentAddress(LatLng latlng) {
-
-        //지오코더... GPS를 주소로 변환
-        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-
-        List<Address> addresses;
-        try {
-            addresses = geocoder.getFromLocation(
-                    latlng.latitude,
-                    latlng.longitude,
-                    1);
-        } catch (IOException ioException) {
-            //네트워크 문제
-            Toast.makeText(this, "지오코더 서비스 사용불가", Toast.LENGTH_LONG).show();
-            return "지오코더 서비스 사용불가";
-        } catch (IllegalArgumentException illegalArgumentException) {
-            Toast.makeText(this, "잘못된 GPS 좌표", Toast.LENGTH_LONG).show();
-            return "잘못된 GPS 좌표";
-        }
-
-        if (addresses == null || addresses.size() == 0) {
-            Toast.makeText(this, "주소 미발견", Toast.LENGTH_LONG).show();
-            return "주소 미발견";
-        } else {
-            Address address = addresses.get(0);
-            return address.getAddressLine(0).toString();
-        }
-    }
-
 
 
     public boolean checkLocationServicesStatus() {
@@ -345,7 +329,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void setCurrentLocation(String[] lat, String[] lng) {
         int i=0;
         double distance;
-        int bool_warning = 0;
+
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.draggable(true);
+
+        BitmapDrawable bitmapdraw1 = (BitmapDrawable) getResources().getDrawable(R.drawable.redcircle); // maker icon 변경
+        Bitmap b1 = bitmapdraw1.getBitmap();
+        Bitmap smallMarker1 = Bitmap.createScaledBitmap(b1, 120, 120, false); // maker 크기
+
+        BitmapDrawable bitmapdraw2 = (BitmapDrawable) getResources().getDrawable(R.drawable.redcircle_far); // maker icon 변경
+        Bitmap b2 = bitmapdraw2.getBitmap();
+        Bitmap smallMarker2 = Bitmap.createScaledBitmap(b2, 100, 100, false); // maker 크기
+
 
         while(currentMarker[i]!=null){
             currentMarker[i].remove();
@@ -362,18 +357,38 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             LatLng currentLatLng = new LatLng(latitude, longitude); // maker 위치 ( 0.001 = 약 100m )
             Log.d(TAG, "currentLatLng : "+latitude + ", "+longitude);
 
-            MarkerOptions markerOptions = new MarkerOptions();
+            distance=getDistance(currentPosition,currentLatLng);
             markerOptions.position(currentLatLng);
-            markerOptions.draggable(true);
-            BitmapDrawable bitmapdraw = (BitmapDrawable) getResources().getDrawable(R.drawable.redcircle); // maker icon 변경
-            Bitmap b = bitmapdraw.getBitmap();
-            Bitmap smallMarker = Bitmap.createScaledBitmap(b, 70, 50, false); // maker 크기
-            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(smallMarker));
+
+            if (distance>16){
+                markerOptions.icon(BitmapDescriptorFactory.fromBitmap(smallMarker1));
+            }
+            else{
+                markerOptions.icon(BitmapDescriptorFactory.fromBitmap(smallMarker2));
+            }
+
+            Log.d(TAG, "distance"+distance);
 
             currentMarker[i] = mMap.addMarker(markerOptions);
             i++;
+
+
         }
 
+    }
+
+    public double getDistance(LatLng LatLng1, LatLng LatLng2) {
+        double distance = 0;
+        Location locationA = new Location("A");
+        locationA.setLatitude(LatLng1.latitude);
+        locationA.setLongitude(LatLng1.longitude);
+
+        Location locationB = new Location("B");
+        locationB.setLatitude(LatLng2.latitude);
+        locationB.setLongitude(LatLng2.longitude);
+
+        distance = locationA.distanceTo(locationB);
+        return distance; // m 단위
     }
 
     public void setDefaultLocation()

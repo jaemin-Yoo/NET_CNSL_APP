@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.INTERNET" /> <!--  인터넷 권한 선언-->
 
 
+    <uses-permission android:name="android.permission.VIBRATE" />
     <application
         android:usesCleartextTraffic="true"
         android:allowBackup="true"
@@ -28,9 +29,14 @@
             </intent-filter>
         </activity>
 
-        <meta-data
+        <!--재민-->
+<!--        <meta-data-->
+<!--            android:name="com.google.android.geo.API_KEY"-->
+<!--            android:value="AIzaSyBbF-0_zrOLTh7_V6fJ-b84V9pdryH_7IE"/>-->
+        <!-- 소영-->
+       <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBbF-0_zrOLTh7_V6fJ-b84V9pdryH_7IE"/>
+            android:value="AIzaSyA_P17g5T2TKL_kCTJo-l23BvtRqoCm13k"/>
 
 
     </application>
