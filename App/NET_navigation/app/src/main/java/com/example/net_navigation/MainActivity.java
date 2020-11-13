@@ -333,11 +333,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.draggable(true);
 
-        BitmapDrawable bitmapdraw1 = (BitmapDrawable) getResources().getDrawable(R.drawable.redcircle); // maker icon 변경
+        BitmapDrawable bitmapdraw1 = (BitmapDrawable) getResources().getDrawable(R.drawable.redcircle_far); // maker icon 변경
         Bitmap b1 = bitmapdraw1.getBitmap();
         Bitmap smallMarker1 = Bitmap.createScaledBitmap(b1, 120, 120, false); // maker 크기
 
-        BitmapDrawable bitmapdraw2 = (BitmapDrawable) getResources().getDrawable(R.drawable.redcircle_far); // maker icon 변경
+        BitmapDrawable bitmapdraw2 = (BitmapDrawable) getResources().getDrawable(R.drawable.redcircle); // maker icon 변경
         Bitmap b2 = bitmapdraw2.getBitmap();
         Bitmap smallMarker2 = Bitmap.createScaledBitmap(b2, 100, 100, false); // maker 크기
 
