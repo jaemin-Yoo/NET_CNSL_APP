@@ -10,12 +10,29 @@
     tools:context=".MainActivity">
 
 
+    <ImageView
+        android:id="@+id/schoolzone"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_gravity="top"
+        android:scaleType="centerCrop"
+        android:src="@drawable/schoolzone"></ImageView>
+
+    <ImageView
+        android:id="@+id/normalzone"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_gravity="top"
+        android:scaleType="centerCrop"
+        android:src="@drawable/normalzone"></ImageView>
+
     <fragment
         android:id="@+id/googleMap"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="750dp"
         android:layout_weight="9"
-        tools:context=".MapsActivity"
-        android:name="com.google.android.gms.maps.SupportMapFragment" />
+        tools:context=".MapsActivity" />
+
 
 </LinearLayout>

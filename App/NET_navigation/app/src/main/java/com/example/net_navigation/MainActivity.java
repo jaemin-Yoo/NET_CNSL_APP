@@ -25,6 +25,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -96,12 +97,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private View mLayout2;
     private View mLayout;
+    private long end;
+    private long dif;
     // Snackbar 사용하기 위해서는 View가 필요합니다.
     // (참고로 Toast에서는 Context가 필요했습니다.)
-
+    ImageView schoolview;
+    ImageView normalview;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -122,6 +128,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.googleMap);
         mapFragment.getMapAsync(this);
+
+        schoolview=findViewById(R.id.schoolzone);
+        normalview=findViewById(R.id.normalzone);
+        schoolview.setImageResource(R.drawable.schoolzone);
+        normalview.setImageResource(R.drawable.normalzone);
+
+        schoolview.setVisibility(View.GONE);
+
     }
 
     @Override
@@ -162,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         }
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(18));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(30));
         mMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
             @Override
             public void onCameraMove() {
@@ -172,12 +186,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
     }
+    long start=System.currentTimeMillis();
 
     LocationCallback locationCallback = new LocationCallback() {
+
+
         @Override
         public void onLocationResult(LocationResult locationResult) {
             super.onLocationResult(locationResult);
             List<Location> locationList = locationResult.getLocations();
+
 
             if (locationList.size() > 0) {
                 Location location = locationList.get(locationList.size() - 1);
@@ -199,7 +217,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             boolean success = jsonObject.getBoolean("success");
-                            //boolean state = false;
                             Log.d(TAG,"success : " + success);
 
                             int number = jsonObject.getInt("number");
@@ -220,16 +237,31 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             int i = 0;
                             if(success){
                                 Log.d(TAG, "test1");
-                                soundwarning();
                                 setCurrentLocation(lat, lng); //현재 위치에 마커 생성
                                 Toast.makeText(getApplicationContext(),"어린이 보호구역" , Toast.LENGTH_SHORT).show();
-                            }
+                                end=System.currentTimeMillis();
+                                dif=(end-start)/1000;
+
+                                dif=dif-2;
+
+                                if(dif%10==0||dif==3)
+                                {
+                                    Log.d(TAG,"dif");
+                                    soundwarning();
+                                }
+                                schoolview.setVisibility(View.VISIBLE);
+                                normalview.setVisibility(View.GONE);
+
+                                }
                             else{
                                 Toast.makeText(getApplicationContext(), "일반 구역",Toast.LENGTH_SHORT).show();
                                 while(currentMarker[i]!=null) {
                                     currentMarker[i].remove();
                                     i++;
+
                                 }
+                                schoolview.setVisibility(View.GONE);
+                                normalview.setVisibility(View.VISIBLE);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -239,10 +271,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 };
 
 
+
                 // 서버로 Volley를 이용해서 요청
                 AddressRequest addressRequest = new AddressRequest(Latitude, Longitude, responseListener);
                 RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
                 queue.add(addressRequest);
+
 
 
                 Log.d(TAG, "onLocationResult : " + markerSnippet);
@@ -333,11 +367,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.draggable(true);
 
-        BitmapDrawable bitmapdraw1 = (BitmapDrawable) getResources().getDrawable(R.drawable.redcircle); // maker icon 변경
+        BitmapDrawable bitmapdraw1 = (BitmapDrawable) getResources().getDrawable(R.drawable.redcircle_far); // maker icon 변경
         Bitmap b1 = bitmapdraw1.getBitmap();
         Bitmap smallMarker1 = Bitmap.createScaledBitmap(b1, 120, 120, false); // maker 크기
 
-        BitmapDrawable bitmapdraw2 = (BitmapDrawable) getResources().getDrawable(R.drawable.redcircle_far); // maker icon 변경
+        BitmapDrawable bitmapdraw2 = (BitmapDrawable) getResources().getDrawable(R.drawable.redcircle); // maker icon 변경
         Bitmap b2 = bitmapdraw2.getBitmap();
         Bitmap smallMarker2 = Bitmap.createScaledBitmap(b2, 100, 100, false); // maker 크기
 
@@ -408,7 +442,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
         currentMarker[i] = mMap.addMarker(markerOptions);
 
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(DEFAULT_LOCATION, 18);
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(DEFAULT_LOCATION, 30);
         mMap.moveCamera(cameraUpdate);
     }
 
