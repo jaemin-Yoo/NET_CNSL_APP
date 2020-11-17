@@ -394,7 +394,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             distance=getDistance(currentPosition,currentLatLng);
             markerOptions.position(currentLatLng);
 
-            if (distance>16){
+            if (distance>8.3){
                 markerOptions.icon(BitmapDescriptorFactory.fromBitmap(smallMarker1));
             }
             else{
