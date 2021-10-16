@@ -30,8 +30,12 @@
 - 각 스쿨존에 설치된 다수의 CCTV에서 수신된 GPS 데이터를 바탕으로 스쿨존의 다중 CCTV에서 추출한 위치정보들을 결합하여 보행자의 위치를 보다 정확하게 파악하고 사각지대 문제를 해결한다.
 - CCTV에서 수신한 보행자 GPS데이터를 KOREN망을 통해 실시간으로 처리하므로 스쿨존 내 교통 상황을 신속하게 확인할 수 있다.
 
-## 3. UI
-|앱|   |   |
+## 3. Flow
+<img src="/doc/imgs/img1.png" width="50%">  
+<img src="/doc/imgs/img2.png" width="50%">
+
+## 4. UI
+|앱|서버|CCTV|
 |---|---|---|
-|서버|   |   |
-|CCTV|   |   |
+|- 실시간으로 서버에 단말기의 위치정보를 전송하여 어린이 보호구역에 위치하는지 파악한다.</br></br>- SDI서버에서 수신받은 보행자 위치정보를 빨간 마커의 형태로 표시한다.</br></br>- 차량에 인접한 거리에 있는 보행자는 마커의 색깔이 진하게 표시되거나 경고알림 등으로 위험정도를 알린다.|**HPC**</br>- SDI, CCTV와 소켓 통신이 가능하다.</br>- 다중 CCTV에서 수신 받은 위치 정보를 이용하여 사람 위치 오차를 최소화하고 사각지대 문제를 해결한다.</br></br>**SDI**</br>- HPC와 소켓 통신 및 앱과 Http통신이 가능하다.</br>- 보행자의 위치정보를 데이터베이스에 저장한다.</br>- 저장된 정보를 앱에 전송하여 보행자의 위치를 표시한다.|- 사람을 인식하고 2D 좌표를 이용하여 지도상의 보행자 위치 좌표를 추출한다.</br></br>- 추출한 좌표를 HPC에 전달한다.|
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/doc/imgs/result01.png" width="50%">|<img src="/doc/imgs/result02.png" width="100%">|<img src="/doc/imgs/result03.png" width="100%">|
